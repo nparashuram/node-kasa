@@ -10,6 +10,7 @@ import { Feature } from '../feature.js';
 import { Module } from '../module.js';
 import { SmartProtocol } from '../protocols/smartprotocol.js';
 import { AesTransport } from '../transports/aestransport.js';
+import { KlapTransport } from '../transports/klaptransport.js';
 // import { ChildDevice, Cloud, DeviceModule, Firmware, Light, Thermostat, Time } from './modules/index.js';
 import { SmartModule } from './smartmodule.js';
 
@@ -293,8 +294,7 @@ export class SmartDevice extends Device {
      */
   async update(updateChildren = true) {
     // KLAP devices can authenticate using default credentials, so don't require explicit credentials
-    const isKlapTransport = this.protocol._transport &&
-                           this.protocol._transport.constructor.name === 'KlapTransportV2';
+    const isKlapTransport = this.protocol._transport instanceof KlapTransport;
 
     if (!isKlapTransport && this.credentials === null && this.credentialsHash === null) {
       throw new AuthenticationError('Smart device requires authentication.');

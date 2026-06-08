@@ -7,8 +7,9 @@ import { DeviceConfig } from '../deviceconfig.js';
 import { Module } from '../module.js';
 import { IotDevice, requiresUpdate } from './iotdevice.js';
 import { KasaException } from '../exceptions.js';
-// import { HSV, ColorTempRange } from '../interfaces/light.js';
-// import { Antitheft, Cloud, Countdown, Emeter, Light, LightPreset, Schedule, Time, Usage } from './modules/index.js';
+import {
+  Antitheft, Cloud, Countdown, Emeter, Schedule, Time, Usage, Light, LightPreset, LightEffect
+} from './modules/index.js';
 
 const _LOGGER = console; // Simple logger replacement
 
@@ -159,16 +160,19 @@ export class IotBulb extends IotDevice {
      */
   async _initializeModules() {
     await super._initializeModules();
-        
-    // this.addModule(Module.IotSchedule, new Schedule(this, "smartlife.iot.common.schedule"));
-    // this.addModule(Module.IotUsage, new Usage(this, "smartlife.iot.common.schedule"));
-    // this.addModule(Module.IotAntitheft, new Antitheft(this, "smartlife.iot.common.anti_theft"));
-    // this.addModule(Module.Time, new Time(this, "smartlife.iot.common.timesetting"));
-    // this.addModule(Module.Energy, new Emeter(this, this.emeterType));
-    // this.addModule(Module.IotCountdown, new Countdown(this, "countdown"));
-    // this.addModule(Module.IotCloud, new Cloud(this, "smartlife.iot.common.cloud"));
-    // this.addModule(Module.Light, new Light(this, IotBulb.LIGHT_SERVICE));
-    // this.addModule(Module.LightPreset, new LightPreset(this, IotBulb.LIGHT_SERVICE));
+
+    this.addModule(Module.IotSchedule, new Schedule(this, 'smartlife.iot.common.schedule'));
+    this.addModule(Module.IotUsage, new Usage(this, 'smartlife.iot.common.schedule'));
+    this.addModule(Module.IotAntitheft, new Antitheft(this, 'smartlife.iot.common.anti_theft'));
+    this.addModule(Module.Time, new Time(this, 'smartlife.iot.common.timesetting'));
+    this.addModule(Module.Energy, new Emeter(this, this.emeterType));
+    this.addModule(Module.IotCountdown, new Countdown(this, 'countdown'));
+    this.addModule(Module.IotCloud, new Cloud(this, 'smartlife.iot.common.cloud'));
+    this.addModule(Module.Light, new Light(this, IotBulb.LIGHT_SERVICE));
+    this.addModule(Module.LightPreset, new LightPreset(this, IotBulb.LIGHT_SERVICE));
+    if (this._hasEffects) {
+      this.addModule(Module.LightEffect, new LightEffect(this, IotBulb.LIGHT_SERVICE));
+    }
   }
 
   /**

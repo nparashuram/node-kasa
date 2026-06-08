@@ -69,8 +69,6 @@ export class SmartModule extends Module {
   static SYSINFO_LOOKUP_KEYS = [];
   static QUERY_GETTER_NAME = '';
   static REGISTERED_MODULES = {};
-    
-  static MINIMUM_UPDATE_INTERVAL_SECS = 0;
   static MINIMUM_HUB_CHILD_UPDATE_INTERVAL_SECS = 60 * 60 * 24;
   static UPDATE_INTERVAL_AFTER_ERROR_SECS = 30;
   static DISABLE_AFTER_ERROR_COUNT = 10;

@@ -7,6 +7,11 @@ import { DeviceType } from '../deviceType.js';
 import { Module } from '../module.js';
 import { SmartDevice } from '../smart/smartdevice.js';
 import { SmartCamModule } from './smartcammodule.js';
+import {
+  Camera, LensMask, ChildDevice, DeviceModule, MotionDetection, PersonDetection,
+  PetDetection, BabyCryDetection, BarkDetection, MeowDetection, GlassDetection,
+  VehicleDetection, TamperDetection, LineCrossingDetection, PanTilt, Battery, Led
+} from './modules/index.js';
 
 const _LOGGER = console;
 

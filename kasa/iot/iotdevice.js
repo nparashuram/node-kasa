@@ -174,7 +174,7 @@ export class IotDevice extends Device {
      * @returns {Object} Device modules
      */
   get modules() {
-    return this._supportedModules;
+    return Object.fromEntries(this._modules);
   }
 
   /**
@@ -316,6 +316,15 @@ export class IotDevice extends Device {
       this._legacyFeatures = features;
     }
 
+  }
+
+  /**
+     * Return True if the device supports effects.
+     * @returns {boolean} Has effects
+     * @private
+     */
+  get _hasEffects() {
+    return 'lighting_effect_state' in (this._sysInfo || {});
   }
 
   /**

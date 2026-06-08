@@ -6,6 +6,8 @@ import { DeviceType } from '../deviceType.js';
 import { DeviceConfig } from '../deviceconfig.js';
 import { Module } from '../module.js';
 import { IotDevice, requiresUpdate } from './iotdevice.js';
+import { Schedule, Usage, Antitheft, Time, Cloud, Led, Motion, AmbientLight } from './modules/index.js';
+
 const _LOGGER = console;
 
 /**
@@ -56,7 +58,12 @@ export class IotPlug extends IotDevice {
      */
   async _initializeModules() {
     await super._initializeModules();
-        
+    this.addModule(Module.IotSchedule, new Schedule(this, 'schedule'));
+    this.addModule(Module.IotUsage, new Usage(this, 'schedule'));
+    this.addModule(Module.IotAntitheft, new Antitheft(this, 'anti_theft'));
+    this.addModule(Module.Time, new Time(this, 'time'));
+    this.addModule(Module.IotCloud, new Cloud(this, 'cnCloud'));
+    this.addModule(Module.Led, new Led(this, 'system'));
   }
 
   /**
@@ -111,6 +118,8 @@ export class IotWallSwitch extends IotPlug {
         
     const devName = this.sysInfo?.dev_name;
     if (devName && devName.includes('PIR')) {
+      this.addModule(Module.IotMotion, new Motion(this, 'smartlife.iot.PIR'));
+      this.addModule(Module.IotAmbientLight, new AmbientLight(this, 'smartlife.iot.LAS'));
     }
   }
 }

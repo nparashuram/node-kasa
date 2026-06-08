@@ -2,6 +2,7 @@
  * Implementation of auto off module.
  */
 
+import { Feature } from '../../feature.js';
 import { SmartModule, allowUpdateAfter } from '../smartmodule.js';
 
 /**
@@ -11,6 +12,35 @@ export class AutoOff extends SmartModule {
   static NAME = 'AutoOff';
   static REQUIRED_COMPONENT = 'auto_off';
   static QUERY_GETTER_NAME = 'get_auto_off_config';
+
+  /**
+     * Initialize features after the initial update.
+     * @protected
+     */
+  _initializeFeatures() {
+    this._addFeature(
+      new Feature({
+        device: this._device,
+        id: 'auto_off_enabled',
+        name: 'Auto off enabled',
+        container: this,
+        attributeGetter: 'enabled',
+        attributeSetter: 'setEnabled',
+        type: Feature.Type.Switch,
+      })
+    );
+    this._addFeature(
+      new Feature({
+        device: this._device,
+        id: 'auto_off_minutes',
+        name: 'Auto off in',
+        container: this,
+        attributeGetter: 'delay',
+        attributeSetter: 'set_delay',
+        type: Feature.Type.Number,
+      })
+    );
+  }
 
   /**
      * Query to execute during the update cycle.

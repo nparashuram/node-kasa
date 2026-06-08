@@ -35,3 +35,5 @@ export { Consumables } from './consumables.js';
 export { Dustbin } from './dustbin.js';
 export { Mop } from './mop.js';
 export { CleanRecords } from './cleanrecords.js';
+export { Matter } from './matter.js';
+export { HomeKit } from './homekit.js';

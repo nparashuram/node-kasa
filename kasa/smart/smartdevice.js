@@ -17,7 +17,8 @@ import {
   TemperatureControl, ChildLock, ChildProtection, PowerProtection, TriggerLogs,
   Alarm, Fan, Thermostat, LightStripEffect,
   FrostProtection, OverheatProtection, LightTransition,
-  Clean, Speaker, Consumables, Dustbin, Mop, CleanRecords
+  Clean, Speaker, Consumables, Dustbin, Mop, CleanRecords,
+  Matter, HomeKit
 } from './modules/index.js';
 import { SmartModule } from './smartmodule.js';
 

@@ -15,6 +15,25 @@ export class DetectionModule extends SmartCamModule {
   static QUERY_SET_SECTION_NAME = '';
 
   /**
+     * Initialize features after the initial update.
+     * @protected
+     */
+  _initializeFeatures() {
+    this._addFeature(
+      new Feature({
+        device: this._device,
+        id: this.constructor.DETECTION_FEATURE_ID,
+        name: this.constructor.DETECTION_FEATURE_NAME,
+        container: this,
+        attributeGetter: 'enabled',
+        attributeSetter: 'setEnabled',
+        type: Feature.Type.Switch,
+        category: Feature.Category.Config,
+      })
+    );
+  }
+
+  /**
      * Return the detection enabled state.
      * @returns {boolean} Enabled
      */

@@ -7,12 +7,11 @@ import { DeviceType } from '../deviceType.js';
 import { DeviceConfig } from '../deviceconfig.js';
 import { AuthenticationError, DeviceError, KasaException, SmartErrorCode } from '../exceptions.js';
 import { Feature } from '../feature.js';
-import { Module } from '../module.js';
 import { SmartProtocol } from '../protocols/smartprotocol.js';
 import { AesTransport } from '../transports/aestransport.js';
 import { KlapTransport } from '../transports/klaptransport.js';
-// import { ChildDevice, Cloud, DeviceModule, Firmware, Light, Thermostat, Time } from './modules/index.js';
 import { SmartModule } from './smartmodule.js';
+import * as Modules from './modules/index.js';
 
 const _LOGGER = console; // Simple logger replacement
 
@@ -29,20 +28,6 @@ const NON_HUB_PARENT_ONLY_MODULES = [
  *
  * SMART devices use a different communication protocol than IoT devices,
  * and support more advanced features like proper module support.
- *
- * @example
- * import { SmartDevice } from 'node-kasa';
- * 
- * const device = new SmartDevice("192.168.1.100");
- * await device.update();
- * 
- * console.log(device.alias);
- * console.log(device.model);
- * console.log(device.isOn);
- * 
- * // Turn device on/off
- * await device.turnOn();
- * await device.turnOff();
  */
 export class SmartDevice extends Device {
   /**
@@ -64,6 +49,7 @@ export class SmartDevice extends Device {
     this._onSince = null;
     this._loggedMissingChildIds = new Set();
     this._parent = null;
+    this._isHubChild = false; // To be set by parent if applicable
   }
 
   /**
@@ -202,6 +188,7 @@ export class SmartDevice extends Device {
      * @private
      */
   async _tryCreateChild(info, childComponents) {
+    // Basic implementation for now
     return null;
   }
 
@@ -236,7 +223,7 @@ export class SmartDevice extends Device {
       response = null;
     }
         
-    if (response !== null) {
+    if (response !== null && response !== undefined) {
       return response;
     }
         
@@ -307,7 +294,6 @@ export class SmartDevice extends Device {
     if (firstUpdate) {
       await this._negotiate();
       await this._initializeModules();
-            
     }
 
     const resp = await this._modularUpdate(firstUpdate, now);
@@ -320,6 +306,13 @@ export class SmartDevice extends Device {
     if (childrenChanged || updateChildren || this.deviceType !== DeviceType.Hub) {
       for (const child of this._children.values()) {
         await child._update();
+      }
+    }
+
+    // Process post update hooks for modules
+    for (const module of this._modules.values()) {
+      if (module._postUpdateHook) {
+        await module._postUpdateHook();
       }
     }
 
@@ -341,11 +334,24 @@ export class SmartDevice extends Device {
     const queries = {
       'get_device_info': null
     };
+
+    // Add module queries
+    for (const module of this._modules.values()) {
+      const q = module.query();
+      if (q) {
+        Object.assign(queries, q);
+      }
+    }
         
     const resp = await this.protocol.query(queries);
     Object.assign(this._lastUpdate, resp);
     this._updateInternalInfo(resp);
         
+    // Update modules with their data
+    for (const module of this._modules.values()) {
+      await module.update(resp);
+    }
+
     return resp;
   }
 
@@ -354,6 +360,23 @@ export class SmartDevice extends Device {
      * @protected
      */
   async _initializeModules() {
+    let skipParentOnlyModules = false;
+    if (this._parent && this._parent.deviceType !== DeviceType.Hub) {
+      skipParentOnlyModules = true;
+    }
+
+    for (const moduleClass of Object.values(SmartModule.REGISTERED_MODULES)) {
+      if (skipParentOnlyModules && NON_HUB_PARENT_ONLY_MODULES.includes(moduleClass.NAME)) {
+        continue;
+      }
+
+      if (moduleClass.isSupported(this)) {
+        const moduleInstance = new moduleClass(this, moduleClass.NAME);
+        if (await moduleInstance._checkSupported()) {
+          this._modules.set(moduleClass.NAME, moduleInstance);
+        }
+      }
+    }
   }
 
   /**
@@ -361,6 +384,22 @@ export class SmartDevice extends Device {
      * @protected
      */
   async _initializeFeatures() {
+    this._addFeature(new Feature({
+      device: this,
+      id: 'device_id',
+      name: 'Device ID',
+      attributeGetter: 'deviceId',
+      category: Feature.Category.Debug,
+      type: Feature.Type.Sensor,
+    }));
+
+    // Initialize features from modules
+    for (const module of this._modules.values()) {
+      module._initializeFeatures();
+      for (const feature of Object.values(module._allFeatures)) {
+        this._addFeature(feature);
+      }
+    }
   }
 
   /**
@@ -525,6 +564,8 @@ export class SmartDevice extends Device {
      * @returns {Date} Current device time
      */
   get time() {
+    const timeModule = this._modules.get('Time');
+    if (timeModule) return timeModule.time;
     return new Date();
   }
 
@@ -553,6 +594,8 @@ export class SmartDevice extends Device {
      * @returns {string} Timezone
      */
   get timezone() {
+    const timeModule = this._modules.get('Time');
+    if (timeModule) return timeModule.timezone;
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
 
@@ -649,7 +692,7 @@ export class SmartDevice extends Device {
      * @returns {boolean} Has emeter
      */
   get hasEmeter() {
-    return 'energy_monitoring' in this._components;
+    return this._modules.has('Energy');
   }
 
   /**

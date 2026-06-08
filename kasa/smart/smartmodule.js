@@ -206,6 +206,97 @@ export class SmartModule extends Module {
   }
 
   /**
+     * Return response data for the module.
+     */
+  get data() {
+    const dev = this._device;
+    const q = this.query();
+
+    if (!q) {
+      return dev.sysInfo;
+    }
+
+    const qKeys = Object.keys(q);
+    const queryKey = qKeys[0];
+
+    if (!(queryKey in dev._lastUpdate)) {
+      if (dev._parent && queryKey in dev._parent._lastUpdate) {
+        // Fallback to parent if needed
+      } else {
+        throw new KasaException(
+          `You need to call update() prior accessing module data for '${this._module}'`
+        );
+      }
+    }
+
+    const filteredData = {};
+    for (const k of qKeys) {
+      if (k in dev._lastUpdate) {
+        filteredData[k] = dev._lastUpdate[k];
+      }
+    }
+
+    const removeKeys = [];
+    for (const key of Object.keys(filteredData)) {
+      if (filteredData[key] instanceof SmartErrorCode) {
+        if (this.optionalResponseKeys && this.optionalResponseKeys.includes(key)) {
+          removeKeys.push(key);
+        } else {
+          throw new DeviceError(
+            `${key} for ${this.name}`,
+            filteredData[key]
+          );
+        }
+      }
+    }
+
+    for (const key of removeKeys) {
+      delete filteredData[key];
+    }
+
+    if (Object.keys(filteredData).length === 1 && removeKeys.length === 0) {
+      return Object.values(filteredData)[0];
+    }
+
+    return filteredData;
+  }
+
+  /**
+     * Return optional response keys for the module.
+     */
+  get optionalResponseKeys() {
+    return [];
+  }
+
+  /**
+     * Return version supported by the device.
+     */
+  get supportedVersion() {
+    if (this.constructor.REQUIRED_COMPONENT !== null) {
+      return this._device._components[this.constructor.REQUIRED_COMPONENT] || -1;
+    }
+    return -1;
+  }
+
+  /**
+     * Additional check to see if the module is supported by the device.
+     */
+  async _checkSupported() {
+    return true;
+  }
+
+  /**
+     * Return True if there is a data error.
+     */
+  _hasDataError() {
+    try {
+      return !this.data;
+    } catch (e) {
+      return true;
+    }
+  }
+
+  /**
      * Return the estimated query response size.
      * @returns {number} Estimated size
      */

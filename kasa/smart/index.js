@@ -16,3 +16,6 @@ export {
 
 // Export constants
 export { NON_HUB_PARENT_ONLY_MODULES } from './smartdevice.js';
+
+// Export modules
+export * as modules from './modules/index.js';

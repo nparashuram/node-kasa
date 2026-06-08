@@ -65,18 +65,19 @@ export {
   DeviceFamily
 };
 
-// Import submodules for compatibility (when implemented)
-// import * as iot from './iot/index.js';
-// export { iot };
+// Import submodules
+import * as iot from './iot/index.js';
+import * as smart from './smart/index.js';
+export { iot, smart };
 
-// Deprecated names mapping (for backwards compatibility)
+// Deprecated names mapping
 export const deprecated_smart_devices = {
-  // SmartDevice: iot.IotDevice,
-  // SmartPlug: iot.IotPlug,
-  // SmartBulb: iot.IotBulb,
-  // SmartLightStrip: iot.IotLightStrip,
-  // SmartStrip: iot.IotStrip,
-  // SmartDimmer: iot.IotDimmer
+  SmartDevice: iot.IotDevice,
+  SmartPlug: iot.IotPlug,
+  SmartBulb: iot.IotBulb,
+  SmartLightStrip: iot.IotLightStrip,
+  SmartStrip: iot.IotStrip,
+  SmartDimmer: iot.IotDimmer
 };
 
 export const deprecated_classes = {

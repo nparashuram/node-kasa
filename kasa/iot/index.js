@@ -10,6 +10,8 @@ export { IotDimmer } from './iotdimmer.js';
 export { IotLightStrip } from './iotlightstrip.js';
 // export { IotCamera } from './iotcamera.js';
 
+export * from './modules/index.js';
+
 // Export module base classes
 export { IotModule } from './iotmodule.js';
 

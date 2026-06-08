@@ -6,5 +6,7 @@ export { SmartCamDevice } from './smartcamera.js';
 // export { SmartCamChild } from './smartcamchild.js';
 // export { DetectionModule } from './detectionmodule.js';
 
+export * from './modules/index.js';
+
 // Export module base classes
 export { SmartCamModule } from './smartcammodule.js';

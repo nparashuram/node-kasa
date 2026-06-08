@@ -11,7 +11,14 @@ import { Module } from '../module.js';
 import { SmartProtocol } from '../protocols/smartprotocol.js';
 import { AesTransport } from '../transports/aestransport.js';
 import { KlapTransport } from '../transports/klaptransport.js';
-// import { ChildDevice, Cloud, DeviceModule, Firmware, Light, Thermostat, Time } from './modules/index.js';
+import {
+  Cloud, DeviceModule, Firmware, Time, Light, Energy, Brightness, Color, ColorTemperature,
+  AutoOff, BatterySensor, ContactSensor, HumiditySensor, TemperatureSensor, WaterleakSensor,
+  TemperatureControl, ChildLock, ChildProtection, PowerProtection, TriggerLogs,
+  Alarm, Fan, Thermostat, LightStripEffect,
+  FrostProtection, OverheatProtection, LightTransition,
+  Clean, Speaker, Consumables, Dustbin, Mop, CleanRecords
+} from './modules/index.js';
 import { SmartModule } from './smartmodule.js';
 
 const _LOGGER = console; // Simple logger replacement
@@ -354,6 +361,15 @@ export class SmartDevice extends Device {
      * @protected
      */
   async _initializeModules() {
+    for (const modClass of Object.values(SmartModule.REGISTERED_MODULES)) {
+      if (modClass.REQUIRED_COMPONENT &&
+                !(modClass.REQUIRED_COMPONENT in this._components)) {
+        continue;
+      }
+
+      const module = new modClass(this, modClass._moduleName());
+      this._modules.set(module.name, module);
+    }
   }
 
   /**
@@ -361,6 +377,12 @@ export class SmartDevice extends Device {
      * @protected
      */
   async _initializeFeatures() {
+    for (const module of this._modules.values()) {
+      module._initializeFeatures();
+      for (const feat of Object.values(module._moduleFeatures || {})) {
+        this._addFeature(feat);
+      }
+    }
   }
 
   /**

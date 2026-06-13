@@ -46,7 +46,7 @@ export class Brightness extends SmartModule {
    */
   get brightness() {
     // If the device supports effects and one is active, use its brightness
-    const lightEffect = this._device.modules['LightEffect'];
+    const lightEffect = this._device.modules.get('LightEffect');
     if (lightEffect && lightEffect.isActive) {
       return lightEffect.brightness;
     }
@@ -68,7 +68,7 @@ export class Brightness extends SmartModule {
     }
 
     // If the device supports effects and one is active, we adjust its brightness
-    const lightEffect = this._device.modules['LightEffect'];
+    const lightEffect = this._device.modules.get('LightEffect');
     if (lightEffect && lightEffect.isActive) {
       return await lightEffect.setBrightness(brightness);
     }

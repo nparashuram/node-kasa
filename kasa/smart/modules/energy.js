@@ -65,7 +65,7 @@ export class Energy extends SmartModule {
       this._currentConsumption = power / 1000;
     } else {
       // Fallback if get_energy_usage does not provide current_power
-      const currentPowerData = this.data.get_current_power;
+      const currentPowerData = data.get_current_power;
       if (currentPowerData && currentPowerData.current_power !== undefined) {
         this._currentConsumption = currentPowerData.current_power;
       } else {

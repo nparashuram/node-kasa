@@ -205,7 +205,17 @@ export class SmartDevice extends Device {
      * @returns {Object} Device modules
      */
   get modules() {
-    return Object.fromEntries(this._modules);
+    // Proxy to allow both Map access and object-like access for backward compatibility/tests
+    return new Proxy(this._modules, {
+      get(target, prop) {
+        if (prop === 'has') return (key) => target.has(key);
+        if (prop === 'get') return (key) => target.get(key);
+        if (typeof prop === 'string' && target.has(prop)) {
+          return target.get(prop);
+        }
+        return target[prop];
+      }
+    });
   }
 
   /**
@@ -347,11 +357,6 @@ export class SmartDevice extends Device {
     Object.assign(this._lastUpdate, resp);
     this._updateInternalInfo(resp);
         
-    // Update modules with their data
-    for (const module of this._modules.values()) {
-      await module.update(resp);
-    }
-
     return resp;
   }
 

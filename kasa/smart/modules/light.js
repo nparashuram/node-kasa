@@ -22,15 +22,15 @@ export class Light extends SmartModule {
    */
   get _allFeatures() {
     const ret = { ...this._moduleFeatures };
-    const brightness = this._device.modules['Brightness'];
+    const brightness = this._device.modules.get('Brightness');
     if (brightness) {
       Object.assign(ret, brightness._moduleFeatures);
     }
-    const color = this._device.modules['Color'];
+    const color = this._device.modules.get('Color');
     if (color) {
       Object.assign(ret, color._moduleFeatures);
     }
-    const temp = this._device.modules['ColorTemperature'];
+    const temp = this._device.modules.get('ColorTemperature');
     if (temp) {
       Object.assign(ret, temp._moduleFeatures);
     }
@@ -48,7 +48,7 @@ export class Light extends SmartModule {
    * Return the current HSV state of the bulb.
    */
   get hsv() {
-    const color = this._device.modules['Color'];
+    const color = this._device.modules.get('Color');
     if (!color) {
       throw new Error('Bulb does not support color.');
     }
@@ -59,7 +59,7 @@ export class Light extends SmartModule {
    * Return the current color temperature.
    */
   get colorTemp() {
-    const temp = this._device.modules['ColorTemperature'];
+    const temp = this._device.modules.get('ColorTemperature');
     if (!temp) {
       throw new Error('Bulb does not support colortemp.');
     }
@@ -70,7 +70,7 @@ export class Light extends SmartModule {
    * Return the current brightness.
    */
   get brightness() {
-    const brightness = this._device.modules['Brightness'];
+    const brightness = this._device.modules.get('Brightness');
     if (!brightness) {
       throw new Error('Bulb is not dimmable.');
     }
@@ -81,7 +81,7 @@ export class Light extends SmartModule {
    * Set new HSV.
    */
   async setHsv(hue, saturation, value = null) {
-    const color = this._device.modules['Color'];
+    const color = this._device.modules.get('Color');
     if (!color) {
       throw new Error('Bulb does not support color.');
     }
@@ -92,7 +92,7 @@ export class Light extends SmartModule {
    * Set the color temperature.
    */
   async setColorTemp(temp, { brightness = null } = {}) {
-    const tempMod = this._device.modules['ColorTemperature'];
+    const tempMod = this._device.modules.get('ColorTemperature');
     if (!tempMod) {
       throw new Error('Bulb does not support colortemp.');
     }
@@ -103,7 +103,7 @@ export class Light extends SmartModule {
    * Set the brightness.
    */
   async setBrightness(brightness) {
-    const brightnessMod = this._device.modules['Brightness'];
+    const brightnessMod = this._device.modules.get('Brightness');
     if (!brightnessMod) {
       throw new Error('Bulb is not dimmable.');
     }
@@ -147,15 +147,15 @@ export class Light extends SmartModule {
       state.light_on = false;
     } else {
       state.light_on = true;
-      if (this._device.modules['Brightness']) {
+      if (device.modules.has('Brightness')) {
         state.brightness = this.brightness;
       }
-      if (this._device.modules['Color']) {
+      if (device.modules.has('Color')) {
         const hsv = this.hsv;
         state.hue = hsv.hue;
         state.saturation = hsv.saturation;
       }
-      if (this._device.modules['ColorTemperature']) {
+      if (device.modules.has('ColorTemperature')) {
         state.color_temp = this.colorTemp;
       }
     }

@@ -220,8 +220,9 @@ export class SmartModule extends Module {
     const queryKey = qKeys[0];
 
     if (!(queryKey in dev._lastUpdate)) {
-      if (dev._parent && queryKey in dev._parent._lastUpdate) {
+      if (dev.parent && queryKey in dev.parent._lastUpdate) {
         // Fallback to parent if needed
+        return dev.parent._lastUpdate;
       } else {
         throw new KasaException(
           `You need to call update() prior accessing module data for '${this._module}'`

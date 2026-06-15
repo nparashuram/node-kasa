@@ -114,9 +114,31 @@ export class Alarm extends Module {
 }
 
 // Add FeatureAttribute metadata to methods that should be bound to features
-Alarm.prototype.alarmSound._featureAttribute = new FeatureAttribute();
-Alarm.prototype.setAlarmSound._featureAttribute = new FeatureAttribute();
-Alarm.prototype.alarmVolume._featureAttribute = new FeatureAttribute();
-Alarm.prototype.setAlarmVolume._featureAttribute = new FeatureAttribute();
-Alarm.prototype.alarmDuration._featureAttribute = new FeatureAttribute();
-Alarm.prototype.setAlarmDuration._featureAttribute = new FeatureAttribute();
+const alarmProto = Alarm.prototype;
+
+const alarmSoundDescriptor = Object.getOwnPropertyDescriptor(alarmProto, 'alarmSound');
+if (alarmSoundDescriptor && alarmSoundDescriptor.get) {
+  alarmSoundDescriptor.get._featureAttribute = new FeatureAttribute();
+}
+
+if (alarmProto.setAlarmSound) {
+  alarmProto.setAlarmSound._featureAttribute = new FeatureAttribute();
+}
+
+const alarmVolumeDescriptor = Object.getOwnPropertyDescriptor(alarmProto, 'alarmVolume');
+if (alarmVolumeDescriptor && alarmVolumeDescriptor.get) {
+  alarmVolumeDescriptor.get._featureAttribute = new FeatureAttribute();
+}
+
+if (alarmProto.setAlarmVolume) {
+  alarmProto.setAlarmVolume._featureAttribute = new FeatureAttribute();
+}
+
+const alarmDurationDescriptor = Object.getOwnPropertyDescriptor(alarmProto, 'alarmDuration');
+if (alarmDurationDescriptor && alarmDurationDescriptor.get) {
+  alarmDurationDescriptor.get._featureAttribute = new FeatureAttribute();
+}
+
+if (alarmProto.setAlarmDuration) {
+  alarmProto.setAlarmDuration._featureAttribute = new FeatureAttribute();
+}

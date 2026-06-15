@@ -11,7 +11,7 @@ describe('IoT Module Parity', () => {
   const expectedModules = [
     'Emeter', 'RuleModule', 'Schedule', 'Antitheft', 'Countdown',
     'Time', 'Led', 'Cloud', 'Usage', 'Motion', 'AmbientLight',
-    'Light', 'LightPreset', 'LightEffect', 'Dimmer'
+    'Light', 'LightPreset', 'LightEffect', 'Dimmer', 'HomeKit'
   ];
 
   test.each(expectedModules)('%s module should be exported', (moduleName) => {
@@ -27,7 +27,9 @@ describe('Smart Module Parity', () => {
     'TemperatureControl', 'ChildLock', 'ChildProtection', 'PowerProtection',
     'TriggerLogs', 'Alarm', 'Fan', 'Thermostat', 'LightStripEffect',
     'FrostProtection', 'OverheatProtection', 'LightTransition',
-    'Clean', 'Speaker', 'Consumables', 'Dustbin', 'Mop', 'CleanRecords'
+    'Clean', 'Speaker', 'Consumables', 'Dustbin', 'Mop', 'CleanRecords',
+    'Matter', 'HomeKit', 'ReportMode', 'MotionSensor', 'Led', 'LightEffect',
+    'LightPreset', 'ChildDevice', 'ChildSetup'
   ];
 
   test.each(expectedModules)('%s module should be exported', (moduleName) => {
@@ -40,7 +42,7 @@ describe('SmartCam Module Parity', () => {
     'Camera', 'LensMask', 'ChildDevice', 'DeviceModule', 'MotionDetection', 'PersonDetection',
     'DetectionModule', 'PetDetection', 'BabyCryDetection', 'BarkDetection', 'MeowDetection',
     'GlassDetection', 'VehicleDetection', 'TamperDetection', 'LineCrossingDetection',
-    'PanTilt', 'Battery', 'Led'
+    'PanTilt', 'Battery', 'Led', 'Alarm', 'ChildSetup', 'HomeKit', 'Matter', 'Time'
   ];
 
   test.each(expectedModules)('%s module should be exported', (moduleName) => {

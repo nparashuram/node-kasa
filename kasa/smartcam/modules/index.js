@@ -20,3 +20,8 @@ export { LineCrossingDetection } from './linecrossingdetection.js';
 export { PanTilt } from './pantilt.js';
 export { Battery } from './battery.js';
 export { Led } from './led.js';
+export { Alarm } from './alarm.js';
+export { ChildSetup } from './childsetup.js';
+export { HomeKit } from './homekit.js';
+export { Matter } from './matter.js';
+export { Time } from './time.js';

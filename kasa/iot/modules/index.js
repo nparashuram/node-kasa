@@ -17,3 +17,4 @@ export { Light } from './light.js';
 export { LightPreset } from './lightpreset.js';
 export { LightEffect } from './lighteffect.js';
 export { Dimmer } from './dimmer.js';
+export { HomeKit } from './homekit.js';

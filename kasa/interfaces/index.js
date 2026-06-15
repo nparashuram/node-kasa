@@ -9,6 +9,6 @@ export { Led } from './led.js';
 export { Light, LightState, HSV, ColorTempRange } from './light.js';
 export { Thermostat, ThermostatState } from './thermostat.js';
 export { Time } from './time.js';
-
-// Note: ChildSetup, LightEffect, and LightPreset are not included in this port
-// as they were not requested in the requirements
+export { ChildSetup } from './childsetup.js';
+export { LightEffect } from './lighteffect.js';
+export { LightPreset } from './lightpreset.js';

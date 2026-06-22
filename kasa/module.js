@@ -116,6 +116,7 @@ export class Module {
   // SMARTCAM only modules
   static Camera = 'Camera';
   static LensMask = 'LensMask';
+  static PanTilt = 'PanTilt';
 
   // Vacuum modules
   static Clean = 'Clean';

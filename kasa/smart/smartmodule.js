@@ -218,4 +218,18 @@ export class SmartModule extends Module {
   get name() {
     return this.constructor.NAME || this.constructor.name;
   }
+
+  /**
+   * Return the module specific raw data from the last update.
+   * @returns {Object} The raw data
+   */
+  get data() {
+    if (!this.constructor.QUERY_GETTER_NAME) {
+      return this._device.sysInfo;
+    }
+    return this._device._tryGetResponse(
+      this._device.internalState,
+      this.constructor.QUERY_GETTER_NAME
+    );
+  }
 }

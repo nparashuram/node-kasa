@@ -18,7 +18,7 @@ import {
   Alarm, Fan, Thermostat, LightStripEffect,
   FrostProtection, OverheatProtection, LightTransition,
   Clean, Speaker, Consumables, Dustbin, Mop, CleanRecords,
-  Matter, HomeKit
+  Matter, HomeKit, Led, MotionSensor, ReportMode, ChildSetup, LightEffect, LightPreset
 } from './modules/index.js';
 import { SmartModule } from './smartmodule.js';
 

@@ -27,7 +27,8 @@ describe('Smart Module Parity', () => {
     'TemperatureControl', 'ChildLock', 'ChildProtection', 'PowerProtection',
     'TriggerLogs', 'Alarm', 'Fan', 'Thermostat', 'LightStripEffect',
     'FrostProtection', 'OverheatProtection', 'LightTransition',
-    'Clean', 'Speaker', 'Consumables', 'Dustbin', 'Mop', 'CleanRecords'
+    'Clean', 'Speaker', 'Consumables', 'Dustbin', 'Mop', 'CleanRecords',
+    'Led', 'MotionSensor', 'ReportMode', 'ChildSetup', 'LightEffect', 'LightPreset'
   ];
 
   test.each(expectedModules)('%s module should be exported', (moduleName) => {

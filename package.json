@@ -1,6 +1,6 @@
 {
   "name": "node-kasa",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "Node.js API for TP-Link Kasa and Tapo devices",
   "main": "kasa/index.js",
   "types": "types/index.d.ts",
@@ -42,7 +42,9 @@
     "node": ">=18.0.0"
   },
   "jest": {
-    "testMatch": ["**/tests/**/*.test.js"],
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
     "transform": {},
     "testEnvironment": "node"
   },

@@ -131,7 +131,7 @@ async function _connectWithAutoDetection(host) {
   if (optimalProtocol) {
     const config = new DeviceConfig({
       host,
-      timeout: 5000,
+      timeout: 5,
       connectionType: DeviceConnectionParameters.fromValues(
         optimalProtocol.deviceFamily,
         optimalProtocol.encryptionType,
@@ -343,7 +343,7 @@ async function _connectWithBruteForce(host) {
   for (const attempt of protocolAttempts) {
     const config = new DeviceConfig({
       host,
-      timeout: 5000, // Quick timeout for auto-detection
+      timeout: 5, // Quick timeout (seconds) for auto-detection
       connectionType: DeviceConnectionParameters.fromValues(
         attempt.deviceFamily,
         attempt.encryptionType,

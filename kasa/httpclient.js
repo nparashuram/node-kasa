@@ -75,7 +75,8 @@ export class HttpClient {
       // Request timeout is set to null - using default
     }
 
-    const timeout = this._config.timeout || 30000; // 30 second default
+    // config.timeout is in seconds (as for every other transport); Node's http timeout is in milliseconds
+    const timeout = (this._config.timeout || 30) * 1000; // 30 second default
 
     // If json is not an object send as data.
     // This allows the json parameter to be used to pass other

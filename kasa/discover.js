@@ -705,7 +705,7 @@ export class Discover {
    * @param {string} [options.username] - Username for devices that require authentication  
    * @param {string} [options.password] - Password for devices that require authentication
    * @param {number} [options.port] - Override the discovery port for devices listening on 9999
-   * @param {number} [options.timeout] - Query timeout in milliseconds for devices returned by discovery
+   * @param {number} [options.timeout] - Query timeout in seconds for devices returned by discovery
    * @returns {Promise<Object>} Dictionary with discovered devices
    */
   static async discover(options = {}) {
@@ -775,7 +775,7 @@ export class Discover {
    * @param {Object} options - Discovery options
    * @param {number} [options.discoveryTimeout=5000] - Timeout in milliseconds for discovery
    * @param {number} [options.port] - Optionally set a different port for legacy devices using port 9999
-   * @param {number} [options.timeout] - Timeout in milliseconds for device queries
+   * @param {number} [options.timeout] - Timeout in seconds for device queries
    * @param {Credentials} [options.credentials] - Credentials for devices that require authentication
    * @param {string} [options.username] - Username for devices that require authentication
    * @param {string} [options.password] - Password for devices that require authentication

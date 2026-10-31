@@ -132,9 +132,16 @@ export class XorTransport extends BaseTransport {
     }
 
     return new Promise((resolve, reject) => {
+      const socket = this.socket;
       const encryptedRequest = XorEncryption.encrypt(request);
       let responseBuffer = Buffer.alloc(0);
       let expectedLength = null;
+
+      const detach = () => {
+        socket.removeListener('data', onData);
+        socket.removeListener('error', onError);
+        socket.removeListener('close', onClose);
+      };
 
       const onData = (data) => {
         responseBuffer = Buffer.concat([responseBuffer, data]);
@@ -148,8 +155,7 @@ export class XorTransport extends BaseTransport {
         if (expectedLength !== null && 
                     responseBuffer.length >= XorTransport.BLOCK_SIZE + expectedLength) {
                     
-          this.socket.removeListener('data', onData);
-          this.socket.removeListener('error', onError);
+          detach();
 
           const responseData = responseBuffer.slice(
             XorTransport.BLOCK_SIZE, 
@@ -167,15 +173,23 @@ export class XorTransport extends BaseTransport {
       };
 
       const onError = (error) => {
-        this.socket.removeListener('data', onData);
-        this.socket.removeListener('error', onError);
+        detach();
         reject(error);
       };
 
-      this.socket.on('data', onData);
-      this.socket.once('error', onError);
-            
-      this.socket.write(encryptedRequest);
+      // The device may drop the connection without replying (e.g. its idle timeout expiring
+      // as the request arrives). Fail now so the caller can reconnect and retry, instead of
+      // waiting for the full timeout.
+      const onClose = () => {
+        detach();
+        reject(new Error('Connection closed before the device replied'));
+      };
+
+      socket.on('data', onData);
+      socket.once('error', onError);
+      socket.once('close', onClose);
+
+      socket.write(encryptedRequest);
     });
   }
 
@@ -302,6 +316,7 @@ export class XorTransport extends BaseTransport {
       }
     }
 
+    let sendTimer;
     try {
       if (!this.socket || this.socket.destroyed) {
         throw new Error('Socket not connected after connection attempt');
@@ -310,7 +325,7 @@ export class XorTransport extends BaseTransport {
       return await Promise.race([
         this._executeSend(request),
         new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('Send timeout')), this._timeout * 1000);
+          sendTimer = setTimeout(() => reject(new Error('Send timeout')), this._timeout * 1000);
         })
       ]);
     } catch (error) {
@@ -325,6 +340,8 @@ export class XorTransport extends BaseTransport {
           `Unable to query the device ${this._host}:${this._port}: ${error.message}`
         );
       }
+    } finally {
+      clearTimeout(sendTimer);
     }
   }
 }
